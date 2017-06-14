@@ -6,9 +6,14 @@ class Number:
     def __str__(self):
         return '{}'.format(self.number)
 
+    def reducible(self):
+        return False
+
+    def get(self):
+        return self.number
+
 
 class Add:
-
     def __init__(self, left, right):
         self.left = left
         self.right = right
@@ -16,9 +21,19 @@ class Add:
     def __str__(self):
         return '({} + {})'.format(self.left, self.right)
 
+    def reducible(self):
+        return True
 
-class Multiple:
+    def reduce(self):
+        if self.left.reducible():
+            return Add(self.left.reduce(), self.right)
+        elif self.right.reducible():
+            return Add(self.left, self.right.reduce())
+        else:
+            return Number(self.left.get() + self.right.get())
 
+
+class Multiply:
     def __init__(self, left, right):
         self.left = left
         self.right = right
@@ -26,9 +41,29 @@ class Multiple:
     def __str__(self):
         return '({} * {})'.format(self.left, self.right)
 
+    def reducible(self):
+        return True
 
-calc = Add(Multiple(Number(1),Number(2)), 
-           Multiple(Number(3),Number(4)))
+    def reduce(self):
+        if self.left.reducible():
+            return Multiply(self.left.reduce(), self.right)
+        elif self.right.reducible():
+            return Multiply(self.left, self.right.reduce())
+        else:
+            return Number(self.left.get() * self.right.get())
+
+
+calc = Add(Multiply(Number(1),Number(2)), 
+           Multiply(Number(3),Number(4)))
 number = Number(5)
 print calc
-print number
+print calc.reducible()
+calc = calc.reduce()
+print calc
+print calc.reducible()
+calc = calc.reduce()
+print calc
+print calc.reducible()
+calc = calc.reduce()
+print calc
+print calc.reducible()
