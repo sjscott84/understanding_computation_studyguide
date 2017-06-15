@@ -123,13 +123,60 @@ class Machine:
         while self.expression.reducible():
             self.step()
 
+class DoNothing:
+    def __str__(self):
+        return 'Do Nothing'
+
+    def reducible(self):
+        return False
+
+    def compare(self, other):
+        return isinstance(other, DoNothing)
+
+class Assign:
+    def __init__(self, name, expression):
+        self.name = name
+        self.expression = expression
+
+    def __str__(self):
+        return '{} = {}'.format(self.name, self.expression)
+
+    def reducible(self):
+        return True
+
+    def reduce(self, environment):
+        if self.expression.reducible():
+            return Assign(self.name, self.expression.reduce(environment))
+        else:
+            return DoNothing()
+
+
+statement = Machine(Assign('x', Multiply(Add(Variable('x'), Variable('y')), Divide(Number(25), Variable('z')))),
+                    {'x': Number(4), 'y': Number(6), 'z': Number(5)})
+#environment = {'x': Number(4), 'y': Number(6), 'z': Number(5)})
+#print statement
+#print statement.reducible()
+#statement = statement.reduce(environment)
+#print statement
+#print statement.reducible()
+#statement = statement.reduce(environment)
+#print statement
+#print statement.reducible()
+#statement = statement.reduce(environment)
+#print statement
+#statement = statement.reduce(environment)
+#print statement
+#statement = statement.reduce(environment)
+#print statement
+#statement = statement.reduce(environment)
+#print statement
 #test = Machine(Variable('x'), {'x': Number(4)})
 #test = Machine(Add(Variable('x'), Variable('y')),
 #               {'x': Number(4), 'y': Number(10)})
 
-test2 = Machine(Add(Multiply(Variable('x'), Number(5)),
-                 Divide(Variable('y'), Number(2))),
-                 {'x': Number(5), 'y': Number(10)})
+#test2 = Machine(Add(Multiply(Variable('x'), Number(5)),
+#                 Divide(Variable('y'), Number(2))),
+#                 {'x': Number(5), 'y': Number(10)})
 
 #calc = Machine(Subtract(Divide(Number(12),Number(2)), 
 #               Multiply(Number(3),Number(4))))
