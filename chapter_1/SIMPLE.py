@@ -52,18 +52,34 @@ class Multiply:
         else:
             return Number(self.left.get() * self.right.get())
 
+class Machine:
+    def __init__(self, expression):
+        self.expression = expression
+        print self.expression
+        self.run()
 
-calc = Add(Multiply(Number(1),Number(2)), 
-           Multiply(Number(3),Number(4)))
+    def step(self):
+        self.expression = self.expression.reduce()
+        print self.expression
+
+    def run(self):
+        while self.expression.reducible():
+            self.step()
+
+
+
+calc = Machine(Add(Multiply(Number(1),Number(2)), 
+               Multiply(Number(3),Number(4))))
 number = Number(5)
-print calc
-print calc.reducible()
-calc = calc.reduce()
-print calc
-print calc.reducible()
-calc = calc.reduce()
-print calc
-print calc.reducible()
-calc = calc.reduce()
-print calc
-print calc.reducible()
+
+#print calc
+#print calc.reducible()
+#calc = calc.reduce()
+#print calc
+#print calc.reducible()
+#calc = calc.reduce()
+#print calc
+#print calc.reducible()
+#calc = calc.reduce()
+#print calc
+#print calc.reducible()
